@@ -38,6 +38,7 @@ const users = [
   { name: 'Chris Lee', role: 'Software Engineer', status: 'Online', lastLogin: '1 min ago' },
 ];
 
+// Sample chart data for Weekly Attendance Trend
 const lineData = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   datasets: [
@@ -50,6 +51,7 @@ const lineData = {
   ],
 };
 
+// Updated pie chart data with requested labels
 const pieData = {
   labels: [
     'Theory Of Computation',
@@ -79,6 +81,12 @@ const pieData = {
       borderWidth: 1,
     },
   ],
+};
+
+const SortArrow = ({ direction }) => {
+  if (!direction) return null;
+  if (direction === 'asc') return <FaArrowUp style={{ marginLeft: 5, fontSize: 12 }} />;
+  return <FaArrowDown style={{ marginLeft: 5, fontSize: 12 }} />;
 };
 
 const Dashboard = () => {
@@ -132,7 +140,13 @@ const Dashboard = () => {
       </aside>
       <main className="dashboard-main">
         <header className="dashboard-header">
-          <input className="searchbar" type="text" placeholder="Search..." />
+          <input
+            className="searchbar"
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
           <div className="user-profile">John Dee</div>
         </header>
         <section className="stats-row">
@@ -169,10 +183,18 @@ const Dashboard = () => {
           <table>
             <thead>
               <tr>
-                <th onClick={() => requestSort('name')} style={{ cursor: 'pointer' }}>Name</th>
-                <th onClick={() => requestSort('role')} style={{ cursor: 'pointer' }}>Role</th>
-                <th onClick={() => requestSort('status')} style={{ cursor: 'pointer' }}>Status</th>
-                <th onClick={() => requestSort('lastLogin')} style={{ cursor: 'pointer' }}>Last Login</th>
+                <th onClick={() => requestSort('name')} style={{ cursor: 'pointer' }}>
+                  Name{sortConfig.key === 'name' && <SortArrow direction={sortConfig.direction} />}
+                </th>
+                <th onClick={() => requestSort('role')} style={{ cursor: 'pointer' }}>
+                  Role{sortConfig.key === 'role' && <SortArrow direction={sortConfig.direction} />}
+                </th>
+                <th onClick={() => requestSort('status')} style={{ cursor: 'pointer' }}>
+                  Status{sortConfig.key === 'status' && <SortArrow direction={sortConfig.direction} />}
+                </th>
+                <th onClick={() => requestSort('lastLogin')} style={{ cursor: 'pointer' }}>
+                  Last Login{sortConfig.key === 'lastLogin' && <SortArrow direction={sortConfig.direction} />}
+                </th>
               </tr>
             </thead>
             <tbody>
