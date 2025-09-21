@@ -1,5 +1,4 @@
 import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown } from 'react-icons/fa';
-
 import React, { useState } from 'react';
 
 import {
@@ -34,6 +33,11 @@ const menuItems = [
   { label: "Help & Support", icon: "🆘" }
 ];
 
+const users = [
+  { name: 'Jane Smith', role: 'Software Engineer', status: 'Online', lastLogin: 'Just now' },
+  { name: 'Chris Lee', role: 'Software Engineer', status: 'Online', lastLogin: '1 min ago' },
+];
+
 // Sample chart data for Weekly Attendance Trend
 const lineData = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -59,7 +63,7 @@ const pieData = {
   datasets: [
     {
       label: 'Department Breakdown',
-      data: [20, 15, 30, 25, 10], // Sample values, adjust as needed
+      data: [20, 15, 30, 25, 10],
       backgroundColor: [
         'rgba(54, 162, 235, 0.7)',
         'rgba(255, 99, 132, 0.7)',
@@ -81,6 +85,13 @@ const pieData = {
 
 const Dashboard = () => {
   const [active, setActive] = useState("Attendance");
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.status.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="dashboard-root">
@@ -128,6 +139,13 @@ const Dashboard = () => {
         </section>
         <section className="table-row">
           <h4>User Overview</h4>
+          <input
+            type="text"
+            className="table-search"
+            placeholder="Search users..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
           <table>
             <thead>
               <tr>
@@ -138,18 +156,18 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Jane Smith</td>
-                <td>Software Engineer</td>
-                <td className="online">Online</td>
-                <td>Just now</td>
-              </tr>
-              <tr>
-                <td>Chris Lee</td>
-                <td>Software Engineer</td>
-                <td className="online">Online</td>
-                <td>1 min ago</td>
-              </tr>
+              {filteredUsers.length > 0 ? filteredUsers.map(user => (
+                <tr key={user.name}>
+                  <td>{user.name}</td>
+                  <td>{user.role}</td>
+                  <td className={user.status.toLowerCase()}>{user.status}</td>
+                  <td>{user.lastLogin}</td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center' }}>No users found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </section>
