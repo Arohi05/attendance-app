@@ -1,5 +1,27 @@
 import React, { useState } from 'react';
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 const menuItems = [
   { label: "Attendance", icon: "📋" },
   { label: "Student", icon: "👩‍🎓" },
@@ -7,6 +29,19 @@ const menuItems = [
   { label: "Settings", icon: "⚙️" },
   { label: "Help & Support", icon: "🆘" }
 ];
+
+// Sample chart data for Weekly Attendance Trend
+const lineData = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  datasets: [
+    {
+      label: 'Attendance',
+      data: [12, 19, 14, 20, 18, 24, 22],
+      borderColor: 'rgb(54, 162, 235)',
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+    },
+  ],
+};
 
 const Dashboard = () => {
   const [active, setActive] = useState("Attendance");
@@ -41,8 +76,7 @@ const Dashboard = () => {
         <section className="charts-row">
           <div className="chart-box">
             <h4>Weekly Attendance Trend</h4>
-            {/* Static line chart placeholder */}
-            <div className="chart-placeholder">[Line Chart Here]</div>
+            <Line data={lineData} />
           </div>
           <div className="chart-box">
             <h4>Department Breakdown</h4>
