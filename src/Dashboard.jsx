@@ -38,7 +38,6 @@ const users = [
   { name: 'Chris Lee', role: 'Software Engineer', status: 'Online', lastLogin: '1 min ago' },
 ];
 
-// Sample chart data for Weekly Attendance Trend
 const lineData = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   datasets: [
@@ -51,7 +50,6 @@ const lineData = {
   ],
 };
 
-// Updated pie chart data with requested labels
 const pieData = {
   labels: [
     'Theory Of Computation',
@@ -86,12 +84,34 @@ const pieData = {
 const Dashboard = () => {
   const [active, setActive] = useState("Attendance");
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  let sortedUsers = [...filteredUsers];
+  if (sortConfig.key !== null) {
+    sortedUsers.sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
 
   return (
     <div className="dashboard-root">
@@ -149,14 +169,14 @@ const Dashboard = () => {
           <table>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Last Login</th>
+                <th onClick={() => requestSort('name')} style={{ cursor: 'pointer' }}>Name</th>
+                <th onClick={() => requestSort('role')} style={{ cursor: 'pointer' }}>Role</th>
+                <th onClick={() => requestSort('status')} style={{ cursor: 'pointer' }}>Status</th>
+                <th onClick={() => requestSort('lastLogin')} style={{ cursor: 'pointer' }}>Last Login</th>
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.length > 0 ? filteredUsers.map(user => (
+              {sortedUsers.length > 0 ? sortedUsers.map(user => (
                 <tr key={user.name}>
                   <td>{user.name}</td>
                   <td>{user.role}</td>
