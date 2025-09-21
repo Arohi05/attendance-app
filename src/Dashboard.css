@@ -84,6 +84,7 @@
   padding: 27px;
   text-align: center;
   font-size: 17px;
+  position: relative;
 }
 .stat-box strong {
   font-size: 32px;
@@ -91,9 +92,42 @@
   color: #222;
   margin-top: 4px;
 }
-.stat-box.present { border-left: 6px solid #36af47; }
-.stat-box.absent { border-left: 6px solid #e94444; }
-.stat-box.remote { border-left: 6px solid #2e99ec; }
+.stat-box.present {
+  border-left: 6px solid #36af47;
+}
+.stat-box.absent {
+  border-left: 6px solid #e94444;
+}
+
+.stat-icon {
+  font-size: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.green {
+  color: #28a745;
+}
+
+.red {
+  color: #dc3545;
+}
+
+.trend {
+  font-size: 12px;
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.up {
+  color: #28a745;
+}
+
+.down {
+  color: #dc3545;
+}
 
 .charts-row {
   display: flex;
@@ -129,7 +163,8 @@
   width: 100%;
   border-collapse: collapse;
 }
-.table-row th, .table-row td {
+.table-row th,
+.table-row td {
   padding: 10px 18px;
   border-bottom: 1px solid #ececec;
   text-align: left;

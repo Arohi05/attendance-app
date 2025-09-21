@@ -1,3 +1,5 @@
+import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+
 import React, { useState } from 'react';
 
 import {
@@ -103,8 +105,16 @@ const Dashboard = () => {
           <div className="user-profile">John Dee</div>
         </header>
         <section className="stats-row">
-          <div className="stat-box present">Present Today<br /><strong>450</strong></div>
-          <div className="stat-box absent">Absent<br /><strong>20</strong></div>
+          <div className="stat-box present">
+            <FaCheckCircle className="stat-icon green" /> Present Today<br />
+            <strong>450</strong>
+            <span className="trend up"><FaArrowUp /> 5%</span>
+          </div>
+          <div className="stat-box absent">
+            <FaTimesCircle className="stat-icon red" /> Absent<br />
+            <strong>20</strong>
+            <span className="trend down"><FaArrowDown /> 2%</span>
+          </div>
         </section>
         <section className="charts-row">
           <div className="chart-box">
