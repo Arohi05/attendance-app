@@ -1,5 +1,6 @@
+import React, { useState, useEffect } from 'react';
+
 import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import React, { useState } from 'react';
 
 import {
   Chart as ChartJS,
@@ -14,16 +15,7 @@ import {
 } from 'chart.js';
 import { Line, Pie } from 'react-chartjs-2';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
 const menuItems = [
   { label: "Attendance", icon: "📋" },
@@ -38,7 +30,6 @@ const users = [
   { name: 'Chris Lee', role: 'Software Engineer', status: 'Online', lastLogin: '1 min ago' },
 ];
 
-// Sample chart data for Weekly Attendance Trend
 const lineData = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   datasets: [
@@ -51,7 +42,6 @@ const lineData = {
   ],
 };
 
-// Updated pie chart data with requested labels
 const pieData = {
   labels: [
     'Theory Of Computation',
@@ -93,6 +83,31 @@ const Dashboard = () => {
   const [active, setActive] = useState("Attendance");
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  const [presentCount, setPresentCount] = useState(0);
+  const [absentCount, setAbsentCount] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const fetchAttendance = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/attendance/today');
+      if (!response.ok) throw new Error('Failed to fetch');
+      const data = await response.json();
+      setPresentCount(data.presentCount);
+      setAbsentCount(data.absentCount);
+    } catch (err) {
+      setError('Failed to fetch attendance data.');
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchAttendance();
+  }, []);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -152,12 +167,18 @@ const Dashboard = () => {
         <section className="stats-row">
           <div className="stat-box present">
             <FaCheckCircle className="stat-icon green" /> Present Today<br />
-            <strong>450</strong>
+            {loading ? <strong>Loading...</strong> :
+              error ? <strong>{error}</strong> :
+                <strong>{presentCount}</strong>
+            }
             <span className="trend up"><FaArrowUp /> 5%</span>
           </div>
           <div className="stat-box absent">
             <FaTimesCircle className="stat-icon red" /> Absent<br />
-            <strong>20</strong>
+            {loading ? <strong>Loading...</strong> :
+              error ? <strong>{error}</strong> :
+                <strong>{absentCount}</strong>
+            }
             <span className="trend down"><FaArrowDown /> 2%</span>
           </div>
         </section>
