@@ -18,14 +18,13 @@ import { Line, Pie } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
 const menuItems = [
-  { label: "Attendance", icon: "📋" },
-  { label: "Student", icon: "👩‍🎓" },
-  { label: "Report", icon: "📊" },
-  { label: "Settings", icon: "⚙️" },
-  { label: "Help & Support", icon: "🆘" }
+  { label: "Attendance", icon: null },
+  { label: "Student", icon: null },
+  { label: "Report", icon: null },
+  { label: "Settings", icon: null },
+  { label: "Help & Support", icon: null }
 ];
 
-// Custom user list
 const users = [
   { name: 'Elaine', role: 'Software Engineer', status: 'Online', lastLogin: 'Just now' },
   { name: 'Yuval', role: 'Product Manager', status: 'Offline', lastLogin: '10 mins ago' },
@@ -99,12 +98,10 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Fetch (simulate fallback error for now)
   const fetchAttendance = async () => {
     setLoading(true);
     setError('');
     try {
-      // The real fetch (will fail with no backend, causing error state)
       const response = await fetch('/api/attendance/today');
       if (!response.ok) throw new Error('Failed to fetch');
       const data = await response.json();
@@ -150,7 +147,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-root">
       <aside className="dashboard-sidebar">
-        <div className="logo">re</div>
+        <div className="logo"><strong>Student Attendance Manager</strong></div>
         <ul>
           {menuItems.map(item => (
             <li
@@ -158,8 +155,7 @@ const Dashboard = () => {
               className={active === item.label ? "active" : ""}
               onClick={() => setActive(item.label)}
             >
-              <span className="icon">{item.icon}</span>
-              {item.label}
+              <strong>{item.label}</strong>
             </li>
           ))}
         </ul>
@@ -173,7 +169,7 @@ const Dashboard = () => {
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
-          <div className="user-profile">John Dee</div>
+          <div className="user-profile">Kushal Joshi</div>
         </header>
         <section className="stats-row">
           <div className="stat-box present">
@@ -204,7 +200,7 @@ const Dashboard = () => {
           </div>
         </section>
         <section className="table-row">
-          <h4>User Overview</h4>
+          <h4>Student Overview</h4>
           <input
             type="text"
             className="table-search"
@@ -218,14 +214,11 @@ const Dashboard = () => {
                 <th onClick={() => requestSort('name')} style={{ cursor: 'pointer' }}>
                   Name{sortConfig.key === 'name' && <SortArrow direction={sortConfig.direction} />}
                 </th>
-                <th onClick={() => requestSort('role')} style={{ cursor: 'pointer' }}>
-                  Role{sortConfig.key === 'role' && <SortArrow direction={sortConfig.direction} />}
+                <th style={{ cursor: 'default' }}>
+                  Semester
                 </th>
                 <th onClick={() => requestSort('status')} style={{ cursor: 'pointer' }}>
                   Status{sortConfig.key === 'status' && <SortArrow direction={sortConfig.direction} />}
-                </th>
-                <th onClick={() => requestSort('lastLogin')} style={{ cursor: 'pointer' }}>
-                  Last Login{sortConfig.key === 'lastLogin' && <SortArrow direction={sortConfig.direction} />}
                 </th>
               </tr>
             </thead>
@@ -233,13 +226,14 @@ const Dashboard = () => {
               {sortedUsers.length > 0 ? sortedUsers.map(user => (
                 <tr key={user.name}>
                   <td>{user.name}</td>
-                  <td>{user.role}</td>
-                  <td className={user.status.toLowerCase()}>{user.status}</td>
-                  <td>{user.lastLogin}</td>
+                  <td>Sem V</td>
+                  <td className={user.status.toLowerCase()}>
+                    {user.status === "Online" ? "Present" : "Absent"}
+                  </td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="4" style={{ textAlign: 'center' }}>No users found.</td>
+                  <td colSpan="3" style={{ textAlign: 'center' }}>No users found.</td>
                 </tr>
               )}
             </tbody>
