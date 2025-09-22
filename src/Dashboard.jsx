@@ -25,9 +25,18 @@ const menuItems = [
   { label: "Help & Support", icon: "🆘" }
 ];
 
+// Custom user list
 const users = [
-  { name: 'Jane Smith', role: 'Software Engineer', status: 'Online', lastLogin: 'Just now' },
-  { name: 'Chris Lee', role: 'Software Engineer', status: 'Online', lastLogin: '1 min ago' },
+  { name: 'Elaine', role: 'Software Engineer', status: 'Online', lastLogin: 'Just now' },
+  { name: 'Yuval', role: 'Product Manager', status: 'Offline', lastLogin: '10 mins ago' },
+  { name: 'Arohi', role: 'QA Engineer', status: 'Offline', lastLogin: 'Yesterday' },
+  { name: 'Mohit', role: 'Software Engineer', status: 'Online', lastLogin: '5 mins ago' },
+  { name: 'Anugya', role: 'Product Manager', status: 'Online', lastLogin: '15 mins ago' },
+  { name: 'Nandini', role: 'Designer', status: 'Online', lastLogin: 'Just now' },
+  { name: 'Shreya', role: 'Software Engineer', status: 'Offline', lastLogin: '1 min ago' },
+  { name: 'Nelay', role: 'Tester', status: 'Online', lastLogin: '10 secs ago' },
+  { name: 'Ashita', role: 'Developer', status: 'Online', lastLogin: '30 mins ago' },
+  { name: 'Akshita', role: 'Software Engineer', status: 'Offline', lastLogin: '45 mins ago' },
 ];
 
 const lineData = {
@@ -90,10 +99,12 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Fetch (simulate fallback error for now)
   const fetchAttendance = async () => {
     setLoading(true);
     setError('');
     try {
+      // The real fetch (will fail with no backend, causing error state)
       const response = await fetch('/api/attendance/today');
       if (!response.ok) throw new Error('Failed to fetch');
       const data = await response.json();
