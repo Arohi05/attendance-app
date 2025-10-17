@@ -1,7 +1,13 @@
+// Dashboard.jsx - Student Attendance Manager main dashboard component
+// This file contains the main React component for the dashboard interface.
+// All major UI sections are labeled below and explained for clarity.
+
 import React, { useState, useEffect } from 'react';
 
+// Import attendance-related icons for UI visuals
 import { FaCheckCircle, FaTimesCircle, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
+// Import Chart.js core and useful chart elements for data visualization
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,8 +21,10 @@ import {
 } from 'chart.js';
 import { Line, Pie } from 'react-chartjs-2';
 
+// Register required Chart.js parts for charts used below
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
+// Sidebar navigation menu items (can add icons in future updates)
 const menuItems = [
   { label: "Attendance", icon: null },
   { label: "Student", icon: null },
@@ -25,6 +33,7 @@ const menuItems = [
   { label: "Help & Support", icon: null }
 ];
 
+// Hardcoded user table data (replace with API in production)
 const users = [
   { name: 'Elaine', role: 'Software Engineer', status: 'Online', lastLogin: 'Just now' },
   { name: 'Yuval', role: 'Product Manager', status: 'Offline', lastLogin: '10 mins ago' },
@@ -38,6 +47,7 @@ const users = [
   { name: 'Akshita', role: 'Software Engineer', status: 'Offline', lastLogin: '45 mins ago' },
 ];
 
+// Data set for weekly attendance (used by Line chart)
 const lineData = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
   datasets: [
@@ -50,6 +60,7 @@ const lineData = {
   ],
 };
 
+// Data set for department breakdown (used by Pie chart)
 const pieData = {
   labels: [
     'Theory Of Computation',
@@ -81,23 +92,31 @@ const pieData = {
   ],
 };
 
+// Utility component for showing arrow icon in user table (sorting indicator)
 const SortArrow = ({ direction }) => {
   if (!direction) return null;
   if (direction === 'asc') return <FaArrowUp style={{ marginLeft: 5, fontSize: 12 }} />;
   return <FaArrowDown style={{ marginLeft: 5, fontSize: 12 }} />;
 };
 
+// Main dashboard React component
 const Dashboard = () => {
+  // Sidebar navigation selection state
   const [active, setActive] = useState("Attendance");
+  // Search input state
   const [searchTerm, setSearchTerm] = useState('');
+  // Table sorting configuration
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
+  // Attendance stats state (present/absent counts)
   const [presentCount, setPresentCount] = useState(0);
   const [absentCount, setAbsentCount] = useState(0);
 
+  // Loading and error state for attendance fetch
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Fetch present and absent count from API (called on component mount by useEffect)
   const fetchAttendance = async () => {
     setLoading(true);
     setError('');
@@ -113,16 +132,19 @@ const Dashboard = () => {
     setLoading(false);
   };
 
+  // Side effect to fetch attendance on component load
   useEffect(() => {
     fetchAttendance();
   }, []);
 
+  // Filters users by search term typed by user
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Handles sorting user table by selected column (Name, Semester, Status)
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -131,6 +153,7 @@ const Dashboard = () => {
     setSortConfig({ key, direction });
   };
 
+  // Prepare sorted user data for display in table
   let sortedUsers = [...filteredUsers];
   if (sortConfig.key !== null) {
     sortedUsers.sort((a, b) => {
@@ -144,8 +167,10 @@ const Dashboard = () => {
     });
   }
 
+  // Render dashboard structure
   return (
     <div className="dashboard-root">
+      {/* Sidebar navigation section */}
       <aside className="dashboard-sidebar">
         <div className="logo"><strong>Student Attendance Manager</strong></div>
         <ul>
@@ -161,6 +186,7 @@ const Dashboard = () => {
         </ul>
       </aside>
       <main className="dashboard-main">
+        {/* Top header: search bar and profile */}
         <header className="dashboard-header">
           <input
             className="searchbar"
@@ -169,8 +195,10 @@ const Dashboard = () => {
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
+          {/* User profile display */}
           <div className="user-profile">Kushal Joshi</div>
         </header>
+        {/* Attendance statistics cards */}
         <section className="stats-row">
           <div className="stat-box present">
             <FaCheckCircle className="stat-icon green" /> Present Today<br />
@@ -189,6 +217,7 @@ const Dashboard = () => {
             <span className="trend down"><FaArrowDown /> 2%</span>
           </div>
         </section>
+        {/* Attendance charts row */}
         <section className="charts-row">
           <div className="chart-box">
             <h4>Weekly Attendance Trend</h4>
@@ -199,6 +228,7 @@ const Dashboard = () => {
             <Pie data={pieData} />
           </div>
         </section>
+        {/* Student attendance table */}
         <section className="table-row">
           <h4>Student Overview</h4>
           <input
@@ -211,6 +241,7 @@ const Dashboard = () => {
           <table>
             <thead>
               <tr>
+                {/* Table headers with sorting */}
                 <th onClick={() => requestSort('name')} style={{ cursor: 'pointer' }}>
                   Name{sortConfig.key === 'name' && <SortArrow direction={sortConfig.direction} />}
                 </th>
@@ -223,6 +254,7 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
+              {/* Render student data in table rows */}
               {sortedUsers.length > 0 ? sortedUsers.map(user => (
                 <tr key={user.name}>
                   <td>{user.name}</td>
